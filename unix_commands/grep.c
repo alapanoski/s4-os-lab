@@ -6,12 +6,20 @@
 
 int main(int argc, char *argv[])
 {
+    if (argc < 3)
+    {
+        printf("Usage: %s <pattern> <filename>\n", argv[0]);
+        exit(1);
+    }
+
+    char pattern[BUFFER_SIZE];
+    strncpy(pattern, argv[1], BUFFER_SIZE);
 
     char buf[BUFFER_SIZE];
 
     FILE *fp;
 
-    fp = fopen(argv[1], "r");
+    fp = fopen(argv[2], "r");
 
     if (fp == NULL)
     {
@@ -20,7 +28,10 @@ int main(int argc, char *argv[])
     }
 
     while (fgets(buf, BUFFER_SIZE, fp) != NULL)
-        printf("%s", buf);
+    {
+        if (strstr(buf, pattern) != NULL)
+            printf("%s", buf);
+    }
 
     fclose(fp);
 

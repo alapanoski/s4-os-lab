@@ -50,15 +50,25 @@ int main()
 
     for (int i = 0; i < n; i++)
     {
-        a[i]. ct = 
+        if (current_time < a[i].at)
+            current_time = a[i].at;
+
+        a[i].ct = current_time + a[i].bt;
+        a[i].tat = a[i].ct - a[i].at;
+        a[i].wt = a[i].tat - a[i].bt;
+
+        twt += a[i].wt;
+        ttat += a[i].tat;
+
+        current_time = a[i].ct;
     }
 
     int avg_tat = ttat / n;
     int avg_wt = twt / n;
 
-    printf("PID\tBurst\tArrrival\tCompletion\tWait\tTurn Aruund\n");
+    printf("PID\tBurst\tArrival\tCompletion\tWait\tTurnaround\n");
     for (int i = 0; i < n; i++)
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n", a[i].pid, a[i].bt, a[i].at, a[i].ct, a[i].wt, a[i].tat);
+        printf("%d\t%d\t%d\t%d\t\t%d\t%d\n", a[i].pid, a[i].bt, a[i].at, a[i].ct, a[i].wt, a[i].tat);
 
     printf("Total Turn Around Time: %d\n", ttat);
     printf("Total Waiting Time: %d\n", twt);

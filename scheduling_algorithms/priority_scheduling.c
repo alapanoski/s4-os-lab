@@ -36,51 +36,40 @@ int main()
         a[i].wt = 0;
     }
 
-    while (completed < n)
+    for (int i = 0; i < n - 1; i++)
     {
-        int top_job = -1;
-        int top_priority = 99999;
-
-        for (int i = 0; i < n; i++)
+        for (int j = 0; j < n - i - 1; j++)
         {
-            if (a[i].at <= current_time && a[i].p < top_priority && a[i].rt > 0)
+            if (a[j].p < a[j + 1].p)
             {
-                top_job = i;
-                top_priority = a[i].p;
-            }
-        }
-
-        if (top_job == -1)
-            current_time++;
-        else
-        {
-            a[top_job].rt--;
-            current_time++;
-            if (a[top_job].rt == 0)
-            {
-                completed++;
-                a[top_job].ct = current_time;
-                a[top_job].tat = a[top_job].ct - a[top_job].at;
-                a[top_job].wt = a[top_job].tat - a[top_job].bt;
-                twt += a[top_job].wt;
-                ttat += a[top_job].tat;
+                process temp = a[j];
+                a[j] = a[j + 1];
+                a[j + 1] = temp;
             }
         }
     }
 
     for (int i = 0; i < n; i++)
     {
+        if (current_time < a[i].at)
+            current_time = a[i].at;
+
+        a[i].ct = current_time + a[i].bt;
+        a[i].tat = a[i].ct - a[i].at;
         a[i].wt = a[i].tat - a[i].bt;
+
         twt += a[i].wt;
         ttat += a[i].tat;
+
+        current_time = a[i].ct;
     }
 
     int avg_tat = ttat / n;
     int avg_wt = twt / n;
 
-    printf("PID\tBurst\tArrrival\tPriority\tCompletion\tWait\tTurn Aruund\n");
+    printf("PID\tBurst\tArrival\tPriority\tCompletion\tWait\tTurnaround\n");
     for (int i = 0; i < n; i++)
-        printf("%d\t%d\t%d\t%d\t%d\t%d\t%d\n", a[i].pid, a[i].bt, a[i].at, a[i].p, a[i].ct, a[i].wt, a[i].tat);
+        printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\t%d\n", a[i].pid, a[i].bt, a[i].at, a[i].p, a[i].ct, a[i].wt, a[i].tat);
 
     printf("Total Turn Around Time: %d\n", ttat);
     printf("Total Waiting Time: %d\n", twt);

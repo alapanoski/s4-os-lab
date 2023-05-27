@@ -8,6 +8,13 @@
 
 int main(int argc, char *argv[])
 {
+
+    if (argc < 3)
+    {
+        printf("Usage: %s <source> <destination>\n", argv[0]);
+        exit(1);
+    }
+
     FILE *fp1, *fp2;
     char buf[BUFFER_SIZE];
 
