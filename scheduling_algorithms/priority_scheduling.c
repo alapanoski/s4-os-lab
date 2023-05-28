@@ -20,48 +20,57 @@ int main()
 
     process a[n];
 
-    printf("Enter arrival time, burst time and priority for each process:\n");
+    printf("Enter arrival time, burst time, and priority for each process:\n");
     for (int i = 0; i < n; i++)
     {
         a[i].pid = i + 1;
         scanf("%d %d %d", &a[i].at, &a[i].bt, &a[i].p);
-    }
-
-    int completed = 0;
-    int twt = 0, ttat = 0, current_time = 0;
-
-    for (int i = 0; i < n; i++)
-    {
         a[i].rt = a[i].bt;
         a[i].wt = 0;
     }
 
-    for (int i = 0; i < n - 1; i++)
+    int completed = 0;
+    int twt = 0, ttat = 0, current_time = 0;
+    int time_quantum = 1; // Assuming time quantum of 1 unit
+
+    while (completed < n)
     {
-        for (int j = 0; j < n - i - 1; j++)
+        int selected = -1;
+        int highest_priority = -1;
+
+        for (int i = 0; i < n; i++)
         {
-            if (a[j].p < a[j + 1].p)
+            if (a[i].at <= current_time && a[i].rt > 0)
             {
-                process temp = a[j];
-                a[j] = a[j + 1];
-                a[j + 1] = temp;
+                if (highest_priority == -1 || a[i].p > highest_priority)
+                {
+                    highest_priority = a[i].p;
+                    selected = i;
+                }
             }
         }
-    }
 
-    for (int i = 0; i < n; i++)
-    {
-        if (current_time < a[i].at)
-            current_time = a[i].at;
+        if (selected == -1)
+        {
+            current_time++;
+            continue;
+        }
 
-        a[i].ct = current_time + a[i].bt;
-        a[i].tat = a[i].ct - a[i].at;
-        a[i].wt = a[i].tat - a[i].bt;
+        a[selected].rt--;
 
-        twt += a[i].wt;
-        ttat += a[i].tat;
+        if (a[selected].rt == 0)
+        {
+            a[selected].ct = current_time + 1;
+            a[selected].tat = a[selected].ct - a[selected].at;
+            a[selected].wt = a[selected].tat - a[selected].bt;
 
-        current_time = a[i].ct;
+            twt += a[selected].wt;
+            ttat += a[selected].tat;
+
+            completed++;
+        }
+
+        current_time++;
     }
 
     int avg_tat = ttat / n;
@@ -71,10 +80,10 @@ int main()
     for (int i = 0; i < n; i++)
         printf("%d\t%d\t%d\t%d\t\t%d\t\t%d\t%d\n", a[i].pid, a[i].bt, a[i].at, a[i].p, a[i].ct, a[i].wt, a[i].tat);
 
-    printf("Total Turn Around Time: %d\n", ttat);
+    printf("Total Turnaround Time: %d\n", ttat);
     printf("Total Waiting Time: %d\n", twt);
 
-    printf("Average Turn Around Time: %d\n", avg_tat);
+    printf("Average Turnaround Time: %d\n", avg_tat);
     printf("Average Waiting Time: %d\n", avg_wt);
 
     return 0;
