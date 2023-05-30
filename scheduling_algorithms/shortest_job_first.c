@@ -19,11 +19,11 @@ int main()
 
     process a[n];
 
-    printf("Enter arrival time and burst time for each process:\n");
+    printf("Enter burst time for each process:\n");
     for (int i = 0; i < n; i++)
     {
         a[i].pid = i + 1;
-        scanf("%d %d", &a[i].at, &a[i].bt);
+        scanf("%d", &a[i].bt);
     }
 
     int completed = 0;
@@ -33,6 +33,7 @@ int main()
     {
         a[i].rt = a[i].bt;
         a[i].wt = 0;
+        a[i].at = 0;
     }
 
     for (int i = 0; i < n - 1; i++)
@@ -50,25 +51,21 @@ int main()
 
     for (int i = 0; i < n; i++)
     {
-        if (current_time < a[i].at)
-            current_time = a[i].at;
-
         a[i].ct = current_time + a[i].bt;
+        current_time = a[i].ct;
         a[i].tat = a[i].ct - a[i].at;
         a[i].wt = a[i].tat - a[i].bt;
 
-        twt += a[i].wt;
         ttat += a[i].tat;
-
-        current_time = a[i].ct;
+        twt += a[i].wt;
     }
 
     int avg_tat = ttat / n;
     int avg_wt = twt / n;
 
-    printf("PID\tBurst\tArrival\tCompletion\tWait\tTurnaround\n");
+    printf("PID\tBurst\tCompletion\tWait\tTurnaround\n");
     for (int i = 0; i < n; i++)
-        printf("%d\t%d\t%d\t%d\t\t%d\t%d\n", a[i].pid, a[i].bt, a[i].at, a[i].ct, a[i].wt, a[i].tat);
+        printf("%d\t%d\t%d\t\t%d\t%d\n", a[i].pid, a[i].bt, a[i].ct, a[i].wt, a[i].tat);
 
     printf("Total Turn Around Time: %d\n", ttat);
     printf("Total Waiting Time: %d\n", twt);
