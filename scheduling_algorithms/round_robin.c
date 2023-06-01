@@ -31,7 +31,6 @@ int main()
     printf("Enter the time quantum: ");
     scanf("%d", &quantum);
 
-    // Sort the processes based on arrival time (FCFS)
     for (int i = 0; i < n - 1; i++)
     {
         for (int j = 0; j < n - i - 1; j++)
@@ -47,31 +46,39 @@ int main()
 
     int completed = 0;
     int twt = 0, ttat = 0, current_time = 0;
+    process q[n];
+    int front = 0, rear = -1;
+
+    for (int i = 0; i < n; i++)
+        q[++rear] = a[i];
 
     while (completed < n)
     {
-        for (int i = 0; i < n; i++)
+        int idx = front % n; // Index of the current process in the queue
+
+        if (q[idx].rt <= quantum)
         {
-            if (a[i].rt > 0)
-            {
-                if (a[i].rt <= quantum)
-                {
-                    current_time += a[i].rt;
-                    a[i].rt = 0;
-                    a[i].ct = current_time;
-                    a[i].tat = a[i].ct - a[i].at;
-                    a[i].wt = a[i].tat - a[i].bt;
-                    completed++;
-                    twt += a[i].wt;
-                    ttat += a[i].tat;
-                }
-                else
-                {
-                    current_time += quantum;
-                    a[i].rt -= quantum;
-                }
-            }
+            current_time += q[idx].rt;
+            q[idx].ct = current_time;
+            q[idx].tat = q[idx].ct - q[idx].at;
+            q[idx].wt = q[idx].tat - q[idx].bt;
+            twt += q[idx].wt;
+            ttat += q[idx].tat;
+            q[idx].rt = 0;
+            completed++;
         }
+        else
+        {
+            current_time += quantum;
+            q[idx].rt -= quantum;
+        }
+
+        front++;
+    }
+
+    for (int i = 0; i < n; i++)
+    {
+        a[i] = q[i];
     }
 
     int avg_tat = ttat / n;
