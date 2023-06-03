@@ -54,7 +54,7 @@ int main()
 
     while (completed < n)
     {
-        int idx = front % n; // Index of the current process in the queue
+        int idx = front % n;
 
         if (q[idx].rt <= quantum)
         {

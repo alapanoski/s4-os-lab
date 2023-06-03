@@ -68,13 +68,6 @@ int main()
         }
     }
 
-    for (int i = 0; i < n; i++)
-    {
-        a[i].wt = a[i].tat - a[i].bt;
-        twt += a[i].wt;
-        ttat += a[i].tat;
-    }
-
     int avg_tat = ttat / n;
     int avg_wt = twt / n;
 

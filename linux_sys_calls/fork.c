@@ -1,26 +1,31 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
+#include <sys/wait.h>
 #include <sys/types.h>
 
 int main()
 {
-    int r = fork();
+    pid_t pid = fork();
 
-    if (r == -1)
+    if (pid < 0)
     {
-        printf("Error in process\n");
-        exit(1);
+        fprintf(stderr, "Fork Failed");
+        return 1;
     }
 
-    else if (r == 0)
+    else if (pid == 0)
     {
-        int pid = getpid();
-        printf("Successfully forked process\n");
-        printf("PID: %d\n", pid);
+        printf("Child Process\n");
+        printf("Child PID: %d\n", getpid());
     }
 
-    printf("Program to demonstrate fork()\n");
+    else
+    {
+        printf("Parent Process\n");
+        printf("Parent PID: %d\n", getpid());
+        wait(NULL);
+        printf("Child Complete\n");
+    }
 
     return 0;
 }
